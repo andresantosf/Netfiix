@@ -1,69 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:netfiif/shared/components/botao/padrao_button.dart';
-import 'package:netfiif/shared/components/campo_form/campo_form.dart';
-
-final _tLogin = TextEditingController();
-final _tSenha = TextEditingController();
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
+import 'package:netflixes/modules/usuario/controllers/usuario_controller.dart';
+import 'package:netflixes/shared/components/botao/padrao_button.dart';
+import 'package:netflixes/shared/components/campo_formulario/campo_form.dart';
 
 class UsuarioPage extends StatefulWidget {
-  const UsuarioPage({ Key? key }) : super(key: key);
+  const UsuarioPage({Key? key}) : super(key: key);
 
   @override
   State<UsuarioPage> createState() => _UsuarioPageState();
 }
 
 class _UsuarioPageState extends State<UsuarioPage> {
-    bool obscureText = false;
+  final _controller = UsuarioControler();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('André Santos'),
-        centerTitle: true,
-        backgroundColor: Colors.red
-      ),
-      body:Form(
-        child: ListView(children: [
-          
-          Padding(padding: const EdgeInsets.all(8.0),
-          child: CampoForm(
-            label: "Nome", 
-            ajuda: "André Santos",
-            icon: Icons.email, 
-            controller: _tLogin, 
-            senha:false, 
-            teclado: TextInputType.text),
-          ),
-          
-          Padding(padding: const EdgeInsets.all(8.0),
-          child: CampoForm(
-            label: "Senha", 
-            ajuda: "123456", 
-            icon: Icons.person, 
-            controller: _tLogin, 
-            senha: obscureText, 
-            suffix: IconButton(
-              icon: Icon(
-                obscureText
-                ? Icons.visibility_off
-                : Icons.visibility,
+        appBar: AppBar(
+          title: const Text('Cadastro de usuários'),
+        ),
+        body: Form(
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CampoForm(
+                  label: 'Nome:',
+                  ajuda: 'Ex.: Fulano de tal',
+                  controller: _controller.nome,
                 ),
-              onPressed: () {
-                setState(() {
-                    obscureText = !obscureText;
-                });
-              },
-            ),
-            teclado: TextInputType.text),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CampoForm(
+                  label: 'E-mail',
+                  ajuda: 'Ex.: exemplo@mail.com',
+                  controller: _controller.email,
+                  teclado: TextInputType.emailAddress,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CampoForm(
+                  label: 'Senha:',
+                  ajuda: '',
+                  controller: _controller.senha,
+                  isSenha: true,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ButtonDefault(
+                  label: 'Salvar',
+                  cor: Colors.blue,
+                  aoClicar: () {
+                    _controller.salvarOnPressed(sucesso: () {
+                      Navigator.pop(context);
+                    }, falha: (motivo) {
+                      MotionToast.error(
+                        title: const Text(
+                          'Error',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        description: Text(motivo),
+                        animationType: AnimationType.fromLeft,
+                        position: MotionToastPosition.top,
+                        barrierColor: Colors.black.withOpacity(0.3),
+                        width: 300,
+                        height: 80,
+                        dismissable: false,
+                      ).show(context);
+                    });
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ButtonDefault(
+                  label: 'Cancelar',
+                  cor: Color.fromARGB(255, 99, 95, 89),
+                  aoClicar: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              )
+            ],
           ),
-
-          Padding(padding: const EdgeInsets.all(8.0),
-            child:ButtonDefault(label: "cu",color: Colors.blue, aoClicar: (){}),
-          ),
-      
-        ]),
-      )
-    );
+        ));
   }
 }
